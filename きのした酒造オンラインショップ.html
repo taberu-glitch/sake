@@ -1,0 +1,873 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>きのした酒造オンラインショップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: white storefront, single column on phone → 2-col detail / 4-col grid on desktop; indigo as the one accent, vermilion only for the kura seal */
+:root{
+  --bg:#ffffff;
+  --mist:#f4f6f8;
+  --ink:#1c2127;
+  --sub:#5c6570;
+  --line:#e2e6ea;
+  --ai:#22395c;
+  --ai-soft:#eaeff5;
+  --shu:#b4432f;
+  --kin:#9c7f42;
+  --ok:#2f6b4f;
+  --err:#b4432f;
+  --f-disp:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+img,svg{max-width:100%}
+h1,h2,h3{font-family:var(--f-disp);font-weight:700;text-wrap:balance;margin:0;line-height:1.4}
+:focus-visible{outline:2px solid var(--ai);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border:1px solid var(--ai);background:var(--ai);color:#fff;border-radius:2px;cursor:pointer;font-weight:500;letter-spacing:.06em;text-decoration:none}
+.btn:hover{background:#2c4973}
+.btn.ghost{background:var(--bg);color:var(--ai)}
+.btn.ghost:hover{background:var(--ai-soft)}
+.btn.wide{width:100%}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.link{background:none;border:0;padding:0;color:var(--ai);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.eyebrow{font-size:12px;letter-spacing:.18em;color:var(--sub)}
+.tag{display:inline-block;font-size:11px;line-height:1;padding:5px 7px;border:1px solid var(--kin);color:var(--kin);letter-spacing:.06em}
+.tag.cool{border-color:var(--ai);color:var(--ai)}
+
+/* age gate */
+.gate{position:fixed;inset:0;z-index:100;background:rgba(255,255,255,.97);display:grid;place-items:center;padding:24px 16px}
+.gate__box{max-width:420px;width:100%;text-align:center;display:grid;gap:20px}
+.gate__q{font-family:var(--f-disp);font-size:20px}
+.gate__btns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gate__err{color:var(--err);font-size:14px}
+
+/* header */
+.hd{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.hd__in{display:flex;align-items:center;justify-content:space-between;min-height:64px;padding-block:6px;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.seal{width:30px;height:30px;background:var(--shu);color:#fff;display:grid;place-items:center;font-family:var(--f-disp);font-size:17px;border-radius:3px;flex:none}
+.brand__name{font-family:var(--f-disp);font-size:19px;font-weight:700;letter-spacing:.08em;line-height:1.1}
+/* header wordmark: one line on wide screens, two lines on phones */
+.hd__name{display:block;font-family:var(--f-disp);font-weight:700;font-size:19px;letter-spacing:.08em;line-height:1.2;color:var(--ink)}
+.hd__name span{white-space:nowrap}
+.brand__sub{display:block;font-family:var(--f-body);font-size:10px;letter-spacing:.14em;color:var(--sub);font-weight:400;line-height:1.4;margin-top:2px}
+@media(max-width:559px){.hd__name{font-size:17px}.hd__name span{display:block}}
+.hd__icons{display:flex;gap:4px}
+.ico{position:relative;width:44px;height:44px;display:grid;place-items:center;background:none;border:0;cursor:pointer;border-radius:2px}
+.ico:hover{background:var(--mist)}
+.ico svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.6}
+.badge{position:absolute;top:4px;right:3px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--shu);color:#fff;font-size:11px;line-height:18px;text-align:center}
+.hd__nav{display:none;gap:28px;font-size:14px}
+.hd__nav button{background:none;border:0;cursor:pointer;padding:6px 0;letter-spacing:.06em}
+.hd__nav button:hover{color:var(--ai)}
+@media(min-width:900px){.hd__nav{display:flex}}
+
+/* drawer */
+.drawer{position:fixed;inset:0;z-index:50;display:flex;justify-content:flex-end;background:rgba(28,33,39,.35)}
+.drawer__panel{width:min(420px,100%);height:100%;background:var(--bg);overflow-y:auto;padding:16px 20px 40px;display:grid;align-content:start;gap:28px}
+.drawer__top{display:flex;justify-content:flex-end}
+.dnav{display:grid;border-top:1px solid var(--line)}
+.dnav button{display:flex;justify-content:space-between;align-items:center;background:none;border:0;border-bottom:1px solid var(--line);padding:14px 2px;cursor:pointer;text-align:left}
+.dnav button::after{content:"›";color:var(--sub)}
+.dttl{font-size:12px;letter-spacing:.16em;color:var(--sub);margin-bottom:8px}
+
+/* search */
+.search{display:flex;border:1px solid var(--line);background:var(--bg)}
+.search input{flex:1;min-width:0;border:0;padding:12px 14px;background:transparent}
+.search input:focus{outline:none}
+.search:focus-within{border-color:var(--ai)}
+.search button{width:48px;border:0;background:none;cursor:pointer}
+.search svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:1.6}
+
+/* sections */
+main{min-height:60vh}
+.sec{padding-block:56px}
+.sec.mist{background:var(--mist)}
+.sec__hd{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.sec__hd h2{font-size:24px;letter-spacing:.06em}
+.sec__hd .eyebrow{display:block}
+
+/* MV */
+.mv{position:relative;padding-block:20px 8px}
+.mv__track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:12px}
+.mv__track::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:start;display:grid;grid-template-columns:1fr;border:0;padding:0;cursor:pointer;text-align:left;background:var(--mist)}
+.slide__art{aspect-ratio:4/3;max-width:100%}
+.slide__art svg{display:block;width:100%;height:100%}
+.slide__txt{padding:20px 20px 24px;display:grid;gap:8px;align-content:center}
+.slide__txt h2{font-size:22px}
+.slide__txt p{margin:0;color:var(--sub);font-size:14px}
+@media(min-width:760px){.slide{grid-template-columns:1.1fr 1fr}.slide__art{aspect-ratio:auto;min-height:360px}.slide__txt{padding:40px}.slide__txt h2{font-size:30px}}
+.mv__dots{display:flex;justify-content:center;gap:8px;padding-top:14px}
+.mv__dots button{width:28px;height:3px;border:0;padding:0;background:var(--line);cursor:pointer}
+.mv__dots button.on{background:var(--ai)}
+
+/* categories */
+.cats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+@media(min-width:760px){.cats{grid-template-columns:repeat(3,1fr)}}
+.cat{background:var(--bg);border:0;padding:18px 16px;text-align:left;cursor:pointer;display:grid;gap:2px}
+.cat:hover{background:var(--ai-soft)}
+.cat b{font-family:var(--f-disp);font-size:16px}
+.cat span{font-size:12px;color:var(--sub)}
+
+/* product grid */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 16px}
+@media(min-width:760px){.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:36px 24px}}
+.card{background:none;border:0;padding:0;text-align:left;cursor:pointer;display:grid;gap:10px;align-content:start}
+.card__art{aspect-ratio:1;background:var(--mist);overflow:hidden}
+.card__art svg{display:block;width:100%;height:100%;transition:transform .4s}
+.card:hover .card__art svg{transform:scale(1.04)}
+.card__tags{display:flex;gap:6px;flex-wrap:wrap;min-height:22px}
+.card__name{font-size:14px;line-height:1.6}
+.card__price{font-size:15px;font-weight:700}
+.card__price small{font-weight:400;color:var(--sub);font-size:11px}
+
+/* news & blog */
+.news{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.news li{display:grid;grid-template-columns:auto 1fr;gap:4px 20px;padding:14px 2px;border-bottom:1px solid var(--line);font-size:14px}
+.news time{color:var(--sub)}
+@media(max-width:560px){.news li{grid-template-columns:1fr}}
+.posts{display:grid;gap:24px;grid-template-columns:1fr}
+@media(min-width:760px){.posts{grid-template-columns:repeat(3,1fr)}}
+.post{display:grid;gap:10px}
+.post__art{aspect-ratio:16/10;max-width:100%}
+.post__art svg{display:block;width:100%;height:100%}
+.post h3{font-size:16px}
+.post p{margin:0;font-size:13px;color:var(--sub)}
+
+/* guide strip */
+.guide{display:grid;gap:24px}
+@media(min-width:760px){.guide{grid-template-columns:repeat(3,1fr)}}
+.guide h3{font-size:16px;margin-bottom:6px}
+.guide p{margin:0;font-size:13px;color:var(--sub)}
+
+/* list page */
+.crumb{font-size:12px;color:var(--sub);padding-block:16px 0;display:flex;gap:8px;flex-wrap:wrap}
+.crumb button{background:none;border:0;padding:0;cursor:pointer;color:var(--sub);text-decoration:underline}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.chip{border:1px solid var(--line);background:var(--bg);padding:7px 14px;font-size:13px;cursor:pointer;border-radius:999px}
+.chip.on{background:var(--ai);border-color:var(--ai);color:#fff}
+.empty{padding:48px 0;text-align:center;color:var(--sub)}
+
+/* detail */
+.pd{display:grid;gap:28px;padding-block:20px 56px}
+@media(min-width:860px){.pd{grid-template-columns:1fr 1fr;gap:48px}}
+.pd__art{background:var(--mist);aspect-ratio:1;max-width:100%}
+.pd__art svg{display:block;width:100%;height:100%}
+.pd__info{display:grid;gap:18px;align-content:start;min-width:0}
+.pd__info h1{font-size:26px;letter-spacing:.04em}
+.pd__catch{margin:0;color:var(--sub)}
+.pd__price{font-size:26px;font-weight:700}
+.pd__price small{font-size:12px;font-weight:400;color:var(--sub)}
+.opt{display:grid;gap:8px}
+.opt label{font-size:13px;color:var(--sub)}
+.sizes{display:flex;gap:8px;flex-wrap:wrap}
+.size{border:1px solid var(--line);background:var(--bg);padding:10px 16px;cursor:pointer;min-width:110px;text-align:left;line-height:1.4}
+.size small{display:block;color:var(--sub)}
+.size.on{border-color:var(--ai);box-shadow:inset 0 0 0 1px var(--ai)}
+.qty{display:inline-flex;border:1px solid var(--line);align-items:stretch;height:44px}
+.qty button{width:44px;border:0;background:var(--bg);cursor:pointer;font-size:18px}
+.qty button:hover{background:var(--mist)}
+.qty input{width:52px;border:0;border-inline:1px solid var(--line);text-align:center}
+.spec{width:100%;border-collapse:collapse;font-size:14px}
+.spec th,.spec td{border-bottom:1px solid var(--line);padding:9px 4px;text-align:left;vertical-align:top}
+.spec th{width:40%;color:var(--sub);font-weight:400}
+.taste{display:grid;gap:10px;font-size:13px}
+.scale{display:grid;grid-template-columns:3.5em 1fr 3.5em;align-items:center;gap:10px}
+.scale span:last-child{text-align:right}
+.scale__bar{display:flex;justify-content:space-between;position:relative}
+.scale__bar::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
+.scale__bar i{position:relative;width:12px;height:12px;border-radius:50%;background:var(--bg);border:1px solid var(--line)}
+.scale__bar i.on{background:var(--ai);border-color:var(--ai)}
+.temps{display:flex;gap:6px;flex-wrap:wrap}
+.temp{font-size:12px;padding:6px 10px;border:1px solid var(--line);color:var(--sub)}
+.temp.good{border-color:var(--ai);color:var(--ai)}
+.temp.best{background:var(--ai);border-color:var(--ai);color:#fff}
+.note{font-size:13px;color:var(--sub);background:var(--mist);padding:12px 14px}
+
+/* cart & checkout */
+.steps{display:flex;gap:0;margin-block:20px 32px;list-style:none;padding:0;font-size:12px;counter-reset:s}
+.steps li{flex:1;text-align:center;padding-top:30px;position:relative;color:var(--sub);counter-increment:s;line-height:1.4}
+.steps li::before{content:counter(s);position:absolute;top:0;left:50%;transform:translateX(-50%);width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center;font-size:12px;z-index:1}
+.steps li::after{content:"";position:absolute;top:12px;left:50%;width:100%;height:1px;background:var(--line)}
+.steps li:last-child::after{display:none}
+.steps li.on{color:var(--ai);font-weight:700}
+.steps li.on::before,.steps li.done::before{background:var(--ai);border-color:var(--ai);color:#fff}
+.co{display:grid;gap:32px;padding-bottom:64px}
+@media(min-width:900px){.co{grid-template-columns:minmax(0,1fr) 340px;align-items:start}}
+.co h1{font-size:24px;margin-bottom:8px}
+.lines{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.line{display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.line__art{aspect-ratio:1;background:var(--mist)}
+.line__art svg{display:block;width:100%;height:100%}
+.line__body{display:grid;gap:8px;min-width:0}
+.line__name{font-size:14px;line-height:1.5}
+.line__meta{font-size:12px;color:var(--sub)}
+.line__row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.line__row .qty{height:36px}
+.line__row .qty button{width:36px}
+.line__row .qty input{width:42px}
+.sum{border:1px solid var(--line);padding:20px;display:grid;gap:12px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 88px)}
+.sum h2{font-size:17px}
+.sum dl{margin:0;display:grid;gap:6px;font-size:14px}
+.sum dl div{display:flex;justify-content:space-between;gap:12px}
+.sum dt{color:var(--sub)}
+.sum dd{margin:0}
+.sum .total{border-top:1px solid var(--line);padding-top:12px;font-size:18px;font-weight:700}
+.sum .total dt{color:var(--ink)}
+.free{font-size:12px;color:var(--ai);background:var(--ai-soft);padding:8px 10px}
+.meter{height:4px;background:var(--line);margin-top:6px}
+.meter i{display:block;height:100%;background:var(--ai)}
+
+fieldset{border:0;padding:0;margin:0 0 32px;display:grid;gap:16px}
+legend{font-family:var(--f-disp);font-weight:700;font-size:18px;padding:0 0 12px;border-bottom:1px solid var(--line);width:100%;margin-bottom:8px}
+.f{display:grid;gap:6px}
+.f label,.f .lbl{font-size:13px;font-weight:500}
+.req{font-size:10px;color:#fff;background:var(--shu);padding:2px 5px;margin-left:6px;vertical-align:2px;font-weight:400}
+.f input,.f select,.f textarea{border:1px solid var(--line);padding:11px 12px;background:var(--bg);border-radius:2px;width:100%;min-width:0}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--ai)}
+.f.bad input,.f.bad select{border-color:var(--err)}
+.f .msg{font-size:12px;color:var(--err)}
+.f .hint{font-size:12px;color:var(--sub)}
+.row2{display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:560px){.row2{grid-template-columns:1fr 1fr}}
+.radios{display:grid;gap:8px}
+.radio{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);padding:12px 14px;cursor:pointer}
+.radio:has(input:checked){border-color:var(--ai);background:var(--ai-soft)}
+.radio input{margin-top:6px;accent-color:var(--ai)}
+.radio b{font-weight:500;display:block}
+.radio small{color:var(--sub);font-size:12px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.check input{margin-top:6px;accent-color:var(--ai)}
+.conf{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:28px}
+.conf th,.conf td{border-bottom:1px solid var(--line);padding:10px 4px;text-align:left;vertical-align:top}
+.conf th{width:34%;color:var(--sub);font-weight:400}
+.conf-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.conf-h h2{font-size:18px}
+.handoff{border:1px solid var(--ai);padding:28px 20px;display:grid;gap:14px;text-align:center;margin-block:24px 64px}
+.handoff h1{font-size:22px}
+.handoff p{margin:0;color:var(--sub);font-size:14px}
+.handoff code{font-size:13px;background:var(--mist);padding:2px 6px}
+
+/* static */
+.doc{max-width:720px;padding-block:24px 64px;display:grid;gap:20px}
+.doc h1{font-size:26px}
+.doc h2{font-size:18px;margin-top:12px}
+.doc p{margin:0}
+.ship{width:100%;border-collapse:collapse;font-size:14px}
+.ship th,.ship td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+.ship td:last-child{text-align:right}
+.ship thead th{background:var(--mist);font-weight:500}
+
+/* footer */
+.ft{border-top:1px solid var(--line);padding-block:48px 24px;font-size:13px}
+.ft__grid{display:grid;gap:32px}
+@media(min-width:760px){.ft__grid{grid-template-columns:1.3fr 1fr 1fr}}
+.ft__links{display:grid;gap:6px}
+.ft__links button{background:none;border:0;padding:0;text-align:left;cursor:pointer;color:var(--sub)}
+.ft__links button:hover{color:var(--ai)}
+.tel{font-size:22px;font-weight:700;letter-spacing:.04em}
+.caution{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--sub);font-size:12px;display:grid;gap:8px}
+
+/* ---------- responsive ---------- */
+/* phone (〜559px) */
+@media(max-width:559px){
+  body{font-size:14px}
+  .hd__in{min-height:64px}
+  .sec{padding-block:40px}
+  .sec__hd h2{font-size:20px}
+  .pd__info h1{font-size:21px}
+  .pd__price{font-size:22px}
+  .co h1,.doc h1{font-size:21px}
+  .steps{font-size:10px;margin-block:16px 24px}
+  .steps li{padding-top:28px}
+  .grid{gap:24px 12px}
+  .card__name{font-size:13px}
+  .line{grid-template-columns:72px minmax(0,1fr);gap:12px}
+  .conf th{width:30%}
+  .gate__q{font-size:18px}
+  .tel{font-size:20px}
+}
+@media(max-width:399px){.brand__sub{letter-spacing:.06em;font-size:9px}.ico{width:38px}.hd__icons{gap:0}}
+/* tablet (560〜859px) */
+@media(min-width:560px) and (max-width:759px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.posts{grid-template-columns:1fr 1fr}}
+@media(min-width:560px) and (max-width:899px){.guide{grid-template-columns:1fr 1fr}}
+/* desktop */
+@media(min-width:860px){.pd__art{position:sticky;top:calc(env(safe-area-inset-top,0px) + 88px);align-self:start}}
+@media(min-width:1000px){.slide__art{min-height:440px}.slide__txt h2{font-size:34px}}
+@media(max-width:899px){.sum{position:static}}
+/* phone/tablet: fixed buy bar on the product page */
+.buybar{display:none}
+@media(max-width:859px){
+  .buybar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;align-items:center;gap:12px;background:var(--bg);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+  .buybar__p{display:grid;line-height:1.3;font-size:12px;color:var(--sub);min-width:0}
+  .buybar__p b{font-size:17px;color:var(--ink)}
+  .buybar .btn{flex:1;min-height:46px}
+  .has-buybar .ft{padding-bottom:96px}
+  .has-buybar .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 84px)}
+}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;padding:12px 18px;font-size:14px;display:flex;gap:14px;align-items:center;max-width:calc(100% - 32px)}
+.toast button{background:none;border:0;color:#fff;text-decoration:underline;cursor:pointer;padding:0}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="gate" id="gate" hidden>
+  <div class="gate__box">
+    <div style="display:flex;justify-content:center;gap:10px;align-items:center"><span class="brand__name">きのした酒造オンラインショップ</span></div>
+    <p style="margin:0">このサイトには、お酒の商品情報が含まれています。<br>20歳以上の方のみご覧いただけます。</p>
+    <p class="gate__q">お客様は20歳以上ですか？</p>
+    <div class="gate__btns">
+      <button class="btn" id="gateYes" type="button">はい</button>
+      <button class="btn ghost" id="gateNo" type="button">いいえ</button>
+    </div>
+    <p class="gate__err" id="gateErr" hidden>20歳未満の方はご覧いただけません。</p>
+  </div>
+</div>
+
+<header class="hd">
+  <div class="wrap hd__in">
+    <button class="brand" data-go="home" type="button" aria-label="トップへ">
+      <span><span class="hd__name"><span>きのした酒造</span><span>オンラインショップ</span></span><span class="brand__sub">KINOSHITA SHUZO ONLINE SHOP</span></span>
+    </button>
+    <nav class="hd__nav" aria-label="主要メニュー">
+      <button data-go="list" type="button">商品一覧</button>
+      <button data-cat="season" type="button">季節限定</button>
+      <button data-cat="gift" type="button">ギフト</button>
+      <button data-page="guide" type="button">ご利用ガイド</button>
+    </nav>
+    <div class="hd__icons">
+      <button class="ico" data-page="mypage" type="button" aria-label="マイページ"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.4-7 8-7s7 2.5 8 7"/></svg></button>
+      <button class="ico" data-go="cart" type="button" aria-label="カート"><svg viewBox="0 0 24 24"><path d="M3 4h2.5l2.2 11h11l2-8H6.6"/><circle cx="9" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><span class="badge num" id="badge" hidden>0</span></button>
+      <button class="ico" id="menuOpen" type="button" aria-label="メニュー"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer__panel" role="dialog" aria-label="メニュー">
+    <div class="drawer__top"><button class="ico" id="menuClose" type="button" aria-label="閉じる"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg></button></div>
+    <form class="search js-search"><input id="qDrawer" type="search" placeholder="商品名で検索" aria-label="商品名で検索"><button type="submit" aria-label="検索"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></form>
+    <div><div class="dttl">カテゴリから探す</div><div class="dnav" id="drawerCats"></div></div>
+    <div><div class="dttl">ご案内</div><div class="dnav">
+      <button data-page="guide" type="button">ご利用ガイド</button>
+      <button data-page="faq" type="button">よくあるご質問</button>
+      <button data-page="company" type="button">蔵について</button>
+      <button data-page="tradelaw" type="button">特定商取引法に基づく表記</button>
+      <button data-page="privacy" type="button">プライバシーポリシー</button>
+    </div></div>
+    <div class="note">お電話でのご注文<br><span class="tel num">0120-000-000</span><br>平日 10:00〜17:00（番号はサンプルです）</div>
+  </div>
+</div>
+
+<main id="app"></main>
+
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft__grid">
+      <div style="display:grid;gap:12px">
+        <div style="display:flex;gap:10px;align-items:center"><span class="brand__name">きのした酒造オンラインショップ</span></div>
+        <p style="margin:0;color:var(--sub)">雪どけ水が流れ込む川のほとりで、明治二十二年から酒を醸しています。蔵元から直接お届けします。</p>
+        <div>お電話・FAXでのご注文<br><span class="tel num">0120-000-000</span><br><span style="color:var(--sub)">平日 10:00〜17:00 ／ FAX 24時間受付</span></div>
+      </div>
+      <div><div class="dttl">カテゴリ</div><div class="ft__links" id="footCats"></div></div>
+      <div><div class="dttl">ご案内</div><div class="ft__links">
+        <button data-page="guide" type="button">ご利用ガイド</button>
+        <button data-page="faq" type="button">よくあるご質問</button>
+        <button data-page="company" type="button">蔵について</button>
+        <button data-page="tradelaw" type="button">特定商取引法に基づく表記</button>
+        <button data-page="privacy" type="button">プライバシーポリシー</button>
+      </div></div>
+    </div>
+    <div class="caution">
+      <p style="margin:0">お酒は20歳になってから。飲酒運転は法律で禁止されています。妊娠中や授乳期の飲酒は、胎児・乳児の発育に悪影響を与えるおそれがあります。</p>
+      <small>&copy; Kinoshita Shuzo（架空の蔵元によるデモサイトです）</small>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- data ---------- */
+const CATS = [
+  {id:'ginjo', name:'大吟醸・吟醸', note:'香り高く、すっきりとした味わい'},
+  {id:'junmai', name:'純米・本醸造', note:'食中酒として毎日の一本に'},
+  {id:'season', name:'季節限定', note:'新酒・ひやおろしなど旬の酒'},
+  {id:'special', name:'スパークリング・貴醸酒', note:'食前・食後に楽しむ一本'},
+  {id:'gift', name:'飲み比べ・ギフト', note:'熨斗・包装に対応'},
+  {id:'food', name:'酒粕・食品', note:'蔵で生まれた副産物'}
+];
+const P = [
+ {id:'getsurin',name:'きのした 純米大吟醸 月輪',label:'月輪',cat:'ginjo',tags:['人気'],glass:'#28463a',lab:'#f6f4ee',cap:'#9c7f42',tint:'#edf1ee',
+  sizes:[['720ml',4950],['1800ml',9900]],catch:'山田錦を40%まで磨き、低温で一か月かけて醸した蔵の看板酒。',
+  desc:'洋梨を思わせる穏やかな香りと、舌の上でほどける柔らかな甘み。後味は蔵の井戸水らしく軽やかに切れます。冷やしてワイングラスでどうぞ。',
+  spec:[['原料米','山田錦（兵庫県産）'],['精米歩合','40%'],['アルコール分','16度'],['日本酒度','+2'],['酸度','1.3'],['杜氏','五代目 木下 誠']],sweet:3,body:2,temps:['best','good','','']},
+ {id:'shiokaze',name:'きのした 純米吟醸 汐風',label:'汐風',cat:'ginjo',tags:[],glass:'#3a5f7a',lab:'#ffffff',cap:'#22395c',tint:'#ecf1f5',
+  sizes:[['720ml',2420],['1800ml',4620]],catch:'青りんごのような爽やかな香り。刺身や白身の焼き魚に。',
+  desc:'五百万石を55%精米。軽快な酸が魚介の旨みを引き立てます。冷やしても常温でも味が崩れにくい一本です。',
+  spec:[['原料米','五百万石'],['精米歩合','55%'],['アルコール分','15度'],['日本酒度','+4'],['酸度','1.5']],sweet:2,body:2,temps:['best','good','good','']},
+ {id:'tanokoe',name:'きのした 特別純米 田ノ声',label:'田ノ声',cat:'junmai',tags:['人気'],glass:'#5a4127',lab:'#f1ece0',cap:'#5a4127',tint:'#f3f0ea',
+  sizes:[['720ml',1760],['1800ml',3300]],catch:'契約農家の米で醸す、ふくよかな食中酒。燗で真価を発揮します。',
+  desc:'米の旨みがしっかりと感じられる中口。ぬる燗にすると香りがふくらみ、煮物や鍋料理とよく合います。',
+  spec:[['原料米','こしいぶき（蔵の契約田）'],['精米歩合','60%'],['アルコール分','15度'],['日本酒度','+1'],['酸度','1.6']],sweet:3,body:4,temps:['','good','best','good']},
+ {id:'shinshu',name:'しぼりたて 純米生原酒 新酒',label:'新酒',cat:'season',tags:['限定','要冷蔵'],cool:true,glass:'#e6ece8',lab:'#ffffff',cap:'#b4432f',tint:'#f1f4f2',stroke:'#9fb1a7',
+  sizes:[['720ml',2090]],catch:'搾ったその日に瓶詰め。この時期だけの、弾けるような若い味。',
+  desc:'火入れをしていない生原酒です。微かなガス感と、フレッシュな果実味が特徴。クール便でお届けします。到着後は冷蔵庫で保管し、お早めにお召し上がりください。',
+  spec:[['原料米','五百万石'],['精米歩合','60%'],['アルコール分','18度'],['日本酒度','−1'],['酸度','1.8'],['保存','要冷蔵（10℃以下）']],sweet:4,body:4,temps:['best','','','']},
+ {id:'hiyaoroshi',name:'きのした 純米 ひやおろし',label:'秋あがり',cat:'season',tags:['限定'],glass:'#6b4a1f',lab:'#e9dfc6',cap:'#3c2a14',tint:'#f3eee4',
+  sizes:[['720ml',1980],['1800ml',3850]],catch:'春に搾り、ひと夏を蔵で眠らせた秋の酒。まろやかな熟成味。',
+  desc:'夏を越して角がとれ、旨みがのった秋限定の純米酒。きのこ料理や秋刀魚の塩焼きに合わせてどうぞ。',
+  spec:[['原料米','こしいぶき'],['精米歩合','65%'],['アルコール分','16度'],['日本酒度','+3'],['酸度','1.5']],sweet:3,body:4,temps:['good','best','good','']},
+ {id:'karakuchi',name:'きのした 本醸造 辛口',label:'辛口',cat:'junmai',tags:[],glass:'#28463a',lab:'#22395c',labInk:'#ffffff',cap:'#1c2127',tint:'#edf1ee',
+  sizes:[['720ml',1320],['1800ml',2530]],catch:'地元で長く飲まれてきた晩酌酒。熱燗でも崩れないキレ。',
+  desc:'すっきりとした辛口で、飲み飽きしない味わい。熱燗にするとキレがさらに際立ちます。',
+  spec:[['原料米','国産米'],['精米歩合','65%'],['アルコール分','15度'],['日本酒度','+7'],['酸度','1.4']],sweet:1,body:2,temps:['','good','good','best']},
+ {id:'kohaku',name:'きのした 貴醸酒 琥珀',label:'琥珀',cat:'special',tags:['限定'],glass:'#3e2a16',lab:'#9c7f42',labInk:'#ffffff',cap:'#9c7f42',tint:'#f2eee6',
+  sizes:[['500ml',3300]],catch:'仕込み水の代わりに酒で仕込む、とろりと甘い食後酒。',
+  desc:'三年熟成させた貴醸酒。蜂蜜やドライフルーツのような濃厚な甘みがあります。チーズやチョコレートと一緒に、少量ずつお楽しみください。',
+  spec:[['原料米','五百万石'],['精米歩合','70%'],['アルコール分','16度'],['日本酒度','−40'],['熟成','3年']],sweet:5,body:5,temps:['good','best','','']},
+ {id:'awayuki',name:'きのした スパークリング 泡雪',label:'泡雪',cat:'special',tags:['要冷蔵'],cool:true,glass:'#dfe7ee',lab:'#ffffff',cap:'#a7b6c4',tint:'#eef2f6',stroke:'#a7b6c4',
+  sizes:[['360ml',1650]],catch:'瓶内二次発酵の細やかな泡。乾杯の一杯に。',
+  desc:'瓶の中で自然に生まれた炭酸ガスを閉じ込めました。開栓時は吹きこぼれにご注意ください。',
+  spec:[['原料米','五百万石'],['精米歩合','60%'],['アルコール分','12度'],['日本酒度','−10'],['保存','要冷蔵']],sweet:4,body:1,temps:['best','','','']},
+ {id:'nomikurabe',name:'きのした 飲み比べ三本セット',label:'飲比',cat:'gift',kind:'set',tags:['ギフト'],tint:'#f1f3f5',
+  sizes:[['300ml×3本',2970]],catch:'月輪・汐風・田ノ声を少しずつ。贈り物にも。',
+  desc:'純米大吟醸 月輪、純米吟醸 汐風、特別純米 田ノ声の300ml瓶を化粧箱に詰めました。熨斗・包装を無料で承ります。',
+  spec:[['内容','月輪・汐風・田ノ声 各300ml'],['化粧箱','あり'],['熨斗','無料']],sweet:3,body:3,temps:['best','good','good','']},
+ {id:'sakekasu',name:'蔵出し 吟醸酒粕',label:'酒粕',cat:'food',kind:'kasu',tags:[],tint:'#f5f4f0',
+  sizes:[['500g',550],['1kg',990]],catch:'吟醸酒を搾ったあとの柔らかい板粕。粕汁や甘酒に。',
+  desc:'香りの良い吟醸酒の酒粕です。粕汁、甘酒、魚の粕漬けなどにお使いください。加熱調理すればアルコールが飛びます。',
+  spec:[['原材料','酒粕（米・米麹）'],['保存','冷蔵'],['賞味期限','製造日より90日']]}
+];
+const PREFS = [['北海道','hk'],['青森県','kt'],['岩手県','kt'],['秋田県','kt'],['宮城県','mt'],['山形県','mt'],['福島県','mt'],['茨城県','kk'],['栃木県','kk'],['群馬県','kk'],['埼玉県','kk'],['千葉県','kk'],['東京都','kk'],['神奈川県','kk'],['山梨県','kk'],['新潟県','ss'],['長野県','ss'],['富山県','ss'],['石川県','ss'],['福井県','ss'],['岐阜県','cb'],['静岡県','cb'],['愛知県','cb'],['三重県','cb'],['滋賀県','ks'],['京都府','ks'],['大阪府','ks'],['兵庫県','ks'],['奈良県','ks'],['和歌山県','ks'],['鳥取県','cg'],['島根県','cg'],['岡山県','cg'],['広島県','cg'],['山口県','cg'],['徳島県','sk'],['香川県','sk'],['愛媛県','sk'],['高知県','sk'],['福岡県','ky'],['佐賀県','ky'],['長崎県','ky'],['熊本県','ky'],['大分県','ky'],['宮崎県','ky'],['鹿児島県','ky'],['沖縄県','ok']];
+const REGION = {hk:['北海道',1540],kt:['北東北',1100],mt:['南東北',990],kk:['関東',880],ss:['信越・北陸',770],cb:['中部',880],ks:['関西',990],cg:['中国',1100],sk:['四国',1210],ky:['九州',1320],ok:['沖縄',2420]};
+const FREE_LINE = 11000, COOL_FEE = 330, COD_FEE = 330, WRAP_FEE = 220;
+const PAY = [
+  ['card','クレジットカード','次の画面（決済代行サービス）でカード情報を入力します'],
+  ['cod','代金引換','商品受け取り時に配達員へお支払い（手数料 ¥330）'],
+  ['later','コンビニ・後払い','商品到着後、同封の払込票でお支払い'],
+  ['bank','銀行振込（前払い）','ご入金確認後に発送します']
+];
+const NEWS = [['2026-10-09','しぼりたて新酒の出荷を開始しました'],['2026-10-01','秋限定「ひやおろし」販売のご案内'],['2026-09-20','年末年始の発送スケジュールについて']];
+const POSTS = [
+  {t:'今年の酒米の出来を見に、契約田へ',d:'刈り入れ直前の田んぼで、農家さんと今年の米の話をしてきました。',scene:'field'},
+  {t:'麹室（こうじむろ）の四十八時間',d:'温度と湿度を見ながら夜通し手を入れる、仕込みでいちばん緊張する工程です。',scene:'koji'},
+  {t:'冬の仕込みに向けて、槽（ふね）の手入れ',d:'酒を搾る道具を一つずつ洗い、乾かし、今季の準備を整えています。',scene:'tank'}
+];
+const SLIDES = [
+  {pid:'shinshu',eb:'今季の新酒',h:'搾ったその日に瓶詰めした、しぼりたて生原酒',p:'数量限定。クール便でお届けします。'},
+  {pid:'hiyaoroshi',eb:'秋限定',h:'ひと夏を越えた、まろやかなひやおろし',p:'旬の秋刀魚やきのこ料理と合わせて。'},
+  {pid:'nomikurabe',eb:'ギフト',h:'蔵の代表銘柄を少しずつ、飲み比べセット',p:'熨斗・包装を無料で承ります。'}
+];
+
+/* ---------- art (generated SVG bottles) ---------- */
+function bottleShape(p, tx, ty, s){
+  const glass = p.glass||'#28463a', stroke = p.stroke||'none';
+  const lab = p.lab||'#fff', ink = p.labInk||'#1c2127', cap = p.cap||'#1c2127';
+  const chars = [...(p.label||'')];
+  const fs = chars.length>2?26:32, step = fs+4;
+  const startY = 278 - (chars.length*step)/2 + fs*.8;
+  let txt = chars.map((c,i)=>`<text x="200" y="${startY+i*step}" font-size="${fs}" text-anchor="middle" fill="${ink}" font-family="Shippori Mincho B1,serif" font-weight="700">${c}</text>`).join('');
+  return `<g transform="translate(${tx},${ty}) scale(${s})">
+   <ellipse cx="200" cy="372" rx="78" ry="6" fill="#000" opacity=".06"/>
+   <rect x="178" y="28" width="44" height="28" rx="3" fill="${cap}"/>
+   <path d="M182,52 h36 v58 c0,30 62,40 62,90 v160 q0,10 -10,10 h-140 q-10,0 -10,-10 v-160 c0,-50 62,-60 62,-90 z" fill="${glass}" stroke="${stroke}" stroke-width="2"/>
+   <rect x="133" y="196" width="8" height="150" rx="4" fill="#fff" opacity=".22"/>
+   <rect x="150" y="204" width="100" height="148" fill="${lab}"/>
+   <rect x="156" y="210" width="88" height="136" fill="none" stroke="${ink}" stroke-opacity=".35" stroke-width="1"/>
+   ${txt}
+   <rect x="225" y="324" width="16" height="16" fill="#b4432f"/>
+   <text x="233" y="337" font-size="12" text-anchor="middle" fill="#fff" font-family="Shippori Mincho B1,serif">木</text>
+  </g>`;
+}
+function art(p){
+  let body='';
+  if(p.kind==='set'){
+    const b=[P[0],P[1],P[2]];
+    body =b.map((q,i)=>bottleShape(q,22+i*92,70,.62)).join('') + `<rect x="50" y="300" width="300" height="70" fill="#22395c"/><text x="200" y="344" font-size="20" text-anchor="middle" fill="#fff" font-family="Shippori Mincho B1,serif" letter-spacing="8">飲み比べ三本</text>`;
+  } else if(p.kind==='kasu'){
+    body = `<ellipse cx="200" cy="350" rx="110" ry="8" fill="#000" opacity=".06"/>
+      <path d="M100,130 q100,-30 200,0 l12,210 q-112,20 -224,0 z" fill="#ffffff" stroke="#d8d4c8" stroke-width="2"/>
+      <rect x="150" y="170" width="100" height="130" fill="#f6f2e6" stroke="#1c2127" stroke-opacity=".3"/>
+      <text x="200" y="222" font-size="34" text-anchor="middle" fill="#1c2127" font-family="Shippori Mincho B1,serif" font-weight="700">酒</text>
+      <text x="200" y="264" font-size="34" text-anchor="middle" fill="#1c2127" font-family="Shippori Mincho B1,serif" font-weight="700">粕</text>
+      <rect x="192" y="280" width="16" height="16" fill="#b4432f"/><text x="200" y="293" font-size="12" text-anchor="middle" fill="#fff" font-family="serif">木</text>`;
+  } else body = bottleShape(p,0,8,1);
+  return `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${p.name}"><rect width="400" height="400" fill="${p.tint}"/>${body}</svg>`;
+}
+function slideArt(p){
+  return `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="${p.tint}"/>
+   <circle cx="300" cy="80" r="56" fill="#fff" opacity=".8"/>
+   <path d="M0,240 q100,-30 200,0 t200,0 v60 h-400z" fill="#fff" opacity=".7"/>
+   ${p.kind? `<g transform="translate(40,-30) scale(.85)">${art(p).replace(/^<svg[^>]*>|<\/svg>$/g,'').replace(/<rect width="400" height="400"[^>]*\/>/,'')}</g>`: bottleShape(p,95,-10,.78)}</svg>`;
+}
+function sceneArt(kind){
+  const S = {
+    field:`<rect width="320" height="200" fill="#eef1f5"/><circle cx="250" cy="55" r="22" fill="#fff"/><path d="M0,120 q80,-25 160,0 t160,0 v80 h-320z" fill="#d9c79a"/><path d="M0,150 q80,-20 160,0 t160,0 v50 h-320z" fill="#c4ac6e"/>`+Array.from({length:14},(_,i)=>`<path d="M${12+i*22},${150} q4,-28 10,-34" stroke="#9c7f42" stroke-width="2" fill="none"/><circle cx="${22+i*22}" cy="${115}" r="3" fill="#9c7f42"/>`).join(''),
+    koji:`<rect width="320" height="200" fill="#f3f0ea"/><rect x="40" y="100" width="240" height="60" fill="#c9b48a"/><rect x="40" y="96" width="240" height="8" fill="#5a4127"/>`+Array.from({length:40},(_,i)=>`<circle cx="${50+(i%20)*11.5}" cy="${118+Math.floor(i/20)*18}" r="4" fill="#fff" opacity=".85"/>`).join('')+`<path d="M60,70 q20,-20 40,0 t40,0" stroke="#fff" stroke-width="3" fill="none" opacity=".9"/>`,
+    tank:`<rect width="320" height="200" fill="#ecf1f5"/><rect x="40" y="50" width="70" height="130" rx="6" fill="#fff" stroke="#c7d1db"/><rect x="125" y="40" width="70" height="140" rx="6" fill="#fff" stroke="#c7d1db"/><rect x="210" y="60" width="70" height="120" rx="6" fill="#fff" stroke="#c7d1db"/><rect x="40" y="90" width="70" height="4" fill="#22395c"/><rect x="125" y="80" width="70" height="4" fill="#22395c"/><rect x="210" y="100" width="70" height="4" fill="#22395c"/><rect x="0" y="180" width="320" height="20" fill="#d5dde5"/>`
+  };
+  return `<svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">${S[kind]}</svg>`;
+}
+
+/* ---------- state ---------- */
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let cart = store.get('sumikawa_cart', []);
+let order = store.get('sumikawa_order', {});
+let view = {name:'home'};
+const app = document.getElementById('app');
+const yen = n => '¥' + n.toLocaleString('ja-JP');
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byId = id => P.find(p=>p.id===id);
+const catName = id => (CATS.find(c=>c.id===id)||{}).name||'';
+function saveCart(){store.set('sumikawa_cart',cart);updateBadge()}
+function updateBadge(){const n=cart.reduce((a,c)=>a+c.qty,0);const b=document.getElementById('badge');b.textContent=n;b.hidden=n===0}
+function priceOf(line){const p=byId(line.id);return (p.sizes.find(s=>s[0]===line.size)||p.sizes[0])[1]}
+
+function totals(){
+  const sub = cart.reduce((a,l)=>a+priceOf(l)*l.qty,0);
+  const cool = cart.some(l=>byId(l.id).cool);
+  const pref = PREFS.find(x=>x[0]===order.pref);
+  const reg = pref ? REGION[pref[1]] : null;
+  let ship = reg ? reg[1] : REGION.kk[1];
+  const free = sub >= FREE_LINE;
+  if(free) ship = 0;
+  const coolFee = cool ? COOL_FEE : 0;
+  const cod = order.pay==='cod' ? COD_FEE : 0;
+  const wrap = order.wrap && order.wrap!=='none' ? WRAP_FEE : 0;
+  return {sub,ship,free,coolFee,cod,wrap,reg,total:sub+ship+coolFee+cod+wrap,cool};
+}
+
+/* ---------- views ---------- */
+function card(p){
+  const from = p.sizes.length>1?'〜':'';
+  return `<button class="card" data-pid="${p.id}" type="button">
+    <div class="card__art">${art(p)}</div>
+    <div class="card__tags">${p.tags.map(t=>`<span class="tag ${t==='要冷蔵'?'cool':''}">${t}</span>`).join('')}</div>
+    <div class="card__name">${p.name}</div>
+    <div class="card__price num">${yen(p.sizes[0][1])}${from} <small>税込</small></div>
+  </button>`;
+}
+function searchForm(id, ph){return `<form class="search js-search"><input id="${id}" type="search" placeholder="${ph}" aria-label="商品名で検索"><button type="submit" aria-label="検索"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></button></form>`}
+
+function vHome(){
+  return `
+  <section class="wrap mv" aria-label="おすすめ">
+    <div class="mv__track" id="mvTrack">${SLIDES.map(s=>{const p=byId(s.pid);return `
+      <button class="slide" data-pid="${p.id}" type="button">
+        <div class="slide__art">${slideArt(p)}</div>
+        <div class="slide__txt"><span class="eyebrow">${s.eb}</span><h2>${s.h}</h2><p>${s.p}</p><span class="link" style="justify-self:start">商品を見る</span></div>
+      </button>`}).join('')}</div>
+    <div class="mv__dots" id="mvDots">${SLIDES.map((_,i)=>`<button type="button" aria-label="${i+1}枚目" data-dot="${i}" class="${i?'':'on'}"></button>`).join('')}</div>
+  </section>
+
+  <section class="sec"><div class="wrap">
+    <div class="sec__hd"><div><span class="eyebrow">CATEGORY</span><h2>カテゴリから探す</h2></div></div>
+    <div class="cats">${CATS.map(c=>`<button class="cat" data-cat="${c.id}" type="button"><b>${c.name}</b><span>${c.note}</span></button>`).join('')}</div>
+    <div style="margin-top:20px">${searchForm('qHome','商品名で探す（例：純米吟醸、新酒）')}</div>
+  </div></section>
+
+  <section class="sec mist"><div class="wrap">
+    <div class="sec__hd"><div><span class="eyebrow">LINEUP</span><h2>蔵のお酒</h2></div><button class="link" data-go="list" type="button">すべての商品を見る</button></div>
+    <div class="grid">${P.slice(0,8).map(card).join('')}</div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <div class="sec__hd"><div><span class="eyebrow">NEWS</span><h2>お知らせ</h2></div></div>
+    <ul class="news">${NEWS.map(n=>`<li><time class="num">${n[0].replace(/-/g,'.')}</time><span>${n[1]}</span></li>`).join('')}</ul>
+  </div></section>
+
+  <section class="sec mist"><div class="wrap">
+    <div class="sec__hd"><div><span class="eyebrow">KURA DAYORI</span><h2>蔵だより</h2></div></div>
+    <p style="margin:-8px 0 24px;color:var(--sub);font-size:14px;max-width:40em">蔵のスタッフが、酒造りの様子や季節の出来事をお伝えします。</p>
+    <div class="posts">${POSTS.map(b=>`<article class="post"><div class="post__art">${sceneArt(b.scene)}</div><h3>${b.t}</h3><p>${b.d}</p></article>`).join('')}</div>
+  </div></section>
+
+  <section class="sec"><div class="wrap">
+    <div class="sec__hd"><div><span class="eyebrow">GUIDE</span><h2>ご利用ガイド</h2></div><button class="link" data-page="guide" type="button">詳しく見る</button></div>
+    <div class="guide">
+      <div><h3>お支払い方法</h3><p>クレジットカード、代金引換、コンビニ・後払い、銀行振込からお選びいただけます。</p></div>
+      <div><h3>送料・お届け</h3><p>地域別送料（税込 ¥770〜）。${yen(FREE_LINE)}以上のご注文で送料無料。ご注文から3〜7日で発送します。</p></div>
+      <div><h3>熨斗・ギフト包装</h3><p>熨斗は無料、包装は1注文 ${yen(WRAP_FEE)} で承ります。お届け先の入力画面でご指定ください。</p></div>
+    </div>
+  </div></section>`;
+}
+
+function vList(){
+  const q = (view.q||'').trim();
+  let items = P.filter(p=>(!view.cat||p.cat===view.cat) && (!q || (p.name+p.catch+p.label+catName(p.cat)).includes(q)));
+  const title = q ? `「${esc(q)}」の検索結果` : view.cat ? catName(view.cat) : 'すべての商品';
+  return `<div class="wrap">
+    <div class="crumb"><button data-go="home" type="button">ホーム</button>›<span>${title}</span></div>
+    <div class="sec__hd" style="margin-top:16px"><h1 style="font-size:26px">${title}</h1><span class="num" style="color:var(--sub);font-size:13px">${items.length}件</span></div>
+    <div class="chips"><button class="chip ${!view.cat&&!q?'on':''}" data-go="list" type="button">すべて</button>${CATS.map(c=>`<button class="chip ${view.cat===c.id?'on':''}" data-cat="${c.id}" type="button">${c.name}</button>`).join('')}</div>
+    ${items.length?`<div class="grid">${items.map(card).join('')}</div>`:`<div class="empty">該当する商品が見つかりませんでした。<br>キーワードを変えてお試しください。</div>`}
+    <div style="height:64px"></div></div>`;
+}
+
+function scaleRow(l,r,v){return `<div class="scale"><span>${l}</span><div class="scale__bar">${[1,2,3,4,5].map(i=>`<i class="${i===v?'on':''}"></i>`).join('')}</div><span>${r}</span></div>`}
+
+function vProduct(){
+  const p = byId(view.id); if(!p) return vList();
+  const si = view.size ?? 0;
+  const tLabels=['冷酒','常温','ぬる燗','熱燗'];
+  return `<div class="wrap">
+    <div class="crumb"><button data-go="home" type="button">ホーム</button>›<button data-cat="${p.cat}" type="button">${catName(p.cat)}</button>›<span>${p.name}</span></div>
+    <div class="pd">
+      <div class="pd__art">${art(p)}</div>
+      <div class="pd__info">
+        <div class="card__tags">${p.tags.map(t=>`<span class="tag ${t==='要冷蔵'?'cool':''}">${t}</span>`).join('')}</div>
+        <h1>${p.name}</h1>
+        <p class="pd__catch">${p.catch}</p>
+        <div class="pd__price num" id="pdPrice">${yen(p.sizes[si][1])} <small>税込</small></div>
+        <div class="opt"><label>容量</label><div class="sizes">${p.sizes.map((s,i)=>`<button class="size ${i===si?'on':''}" data-size="${i}" type="button">${s[0]}<small class="num">${yen(s[1])}</small></button>`).join('')}</div></div>
+        <div class="opt"><label for="pdQty">数量</label><div class="qty"><button type="button" data-step="-1" aria-label="減らす">−</button><input id="pdQty" class="num" type="number" min="1" max="24" value="1"><button type="button" data-step="1" aria-label="増やす">＋</button></div></div>
+        <button class="btn wide js-add" id="addCart" type="button">カートに入れる</button>
+        ${p.cool?`<div class="note">この商品は要冷蔵のため、クール便（+${yen(COOL_FEE)}）でお届けします。常温商品と同梱の場合も、すべてクール便になります。</div>`:''}
+        <p style="margin:0">${p.desc}</p>
+        ${p.sweet?`<div class="taste"><div class="dttl" style="margin:0">味わい</div>${scaleRow('甘口','辛口',6-p.sweet)}${scaleRow('淡麗','濃醇',p.body)}</div>
+        <div class="taste"><div class="dttl" style="margin:0">おすすめの飲み方</div><div class="temps">${tLabels.map((t,i)=>`<span class="temp ${p.temps[i]}">${t}${p.temps[i]==='best'?' ◎':p.temps[i]==='good'?' ○':''}</span>`).join('')}</div></div>`:''}
+        <table class="spec"><tbody>${p.spec.map(s=>`<tr><th>${s[0]}</th><td>${s[1]}</td></tr>`).join('')}</tbody></table>
+      </div>
+    </div>
+    <div class="sec__hd"><h2 style="font-size:20px">こちらもおすすめ</h2></div>
+    <div class="grid">${P.filter(x=>x.id!==p.id).slice(0,4).map(card).join('')}</div>
+    <div style="height:64px"></div></div>
+    <div class="buybar"><div class="buybar__p"><span>${p.sizes[si][0]}</span><b class="num">${yen(p.sizes[si][1])}</b></div><button class="btn js-add" type="button">カートに入れる</button></div>`;
+}
+
+function steps(n){
+  const s=['カート','お届け先・お支払い','ご注文内容の確認','決済'];
+  return `<ol class="steps">${s.map((t,i)=>`<li class="${i===n?'on':i<n?'done':''}">${t}</li>`).join('')}</ol>`;
+}
+function summary(btn){
+  const t=totals();
+  const rest = FREE_LINE - t.sub;
+  return `<aside class="sum"><h2>ご注文金額</h2><dl class="num">
+    <div><dt>商品小計</dt><dd>${yen(t.sub)}</dd></div>
+    <div><dt>送料${t.reg?`（${t.reg[0]}）`:'（目安・関東）'}</dt><dd>${t.free?'無料':yen(t.ship)}</dd></div>
+    ${t.cool?`<div><dt>クール便</dt><dd>${yen(t.coolFee)}</dd></div>`:''}
+    ${t.wrap?`<div><dt>ギフト包装</dt><dd>${yen(t.wrap)}</dd></div>`:''}
+    ${t.cod?`<div><dt>代引手数料</dt><dd>${yen(t.cod)}</dd></div>`:''}
+    <div class="total"><dt>合計（税込）</dt><dd>${yen(t.total)}</dd></div></dl>
+    ${t.free?`<div class="free">送料無料が適用されています</div>`:`<div class="free">あと<b class="num">${yen(rest)}</b>で送料無料<div class="meter"><i style="width:${Math.min(100,t.sub/FREE_LINE*100)}%"></i></div></div>`}
+    ${btn||''}</aside>`;
+}
+
+function vCart(){
+  if(!cart.length) return `<div class="wrap">${steps(0)}<div class="empty" style="padding-bottom:96px"><p>カートに商品は入っていません。</p><button class="btn" data-go="list" type="button">商品を探す</button></div></div>`;
+  return `<div class="wrap">${steps(0)}<div class="co"><div style="min-width:0"><h1>カート</h1>
+    <ul class="lines">${cart.map((l,i)=>{const p=byId(l.id);return `<li class="line">
+      <button class="line__art" data-pid="${p.id}" type="button" style="border:0;padding:0;cursor:pointer" aria-label="${p.name}">${art(p)}</button>
+      <div class="line__body"><div class="line__name">${p.name}</div><div class="line__meta">${l.size}${p.cool?' ／ 要冷蔵':''} ／ <span class="num">${yen(priceOf(l))}</span></div>
+      <div class="line__row"><div class="qty"><button type="button" data-cq="${i}" data-d="-1" aria-label="減らす">−</button><input class="num" id="cq${i}" type="number" min="1" max="24" value="${l.qty}" data-cqi="${i}"><button type="button" data-cq="${i}" data-d="1" aria-label="増やす">＋</button></div>
+      <b class="num">${yen(priceOf(l)*l.qty)}</b></div>
+      <div><button class="link" data-rm="${i}" type="button" style="font-size:12px">削除する</button></div></div></li>`}).join('')}</ul>
+    <div style="margin-top:20px"><button class="link" data-go="list" type="button">買い物を続ける</button></div></div>
+    ${summary(`<button class="btn wide" data-go="checkout" type="button">ご購入手続きへ</button><p style="margin:0;font-size:12px;color:var(--sub)">送料はお届け先の入力後に確定します。</p>`)}</div></div>`;
+}
+
+function dateOptions(){
+  const o=['<option value="">指定なし（最短でお届け）</option>'];const w='日月火水木金土';
+  for(let i=4;i<=14;i++){const d=new Date();d.setDate(d.getDate()+i);const v=`${d.getMonth()+1}月${d.getDate()}日（${w[d.getDay()]}）`;o.push(`<option ${order.date===v?'selected':''}>${v}</option>`)}
+  return o.join('');
+}
+function fld(id,label,opt={}){
+  const v = esc(order[id]||'');
+  return `<div class="f" data-f="${id}"><label for="${id}">${label}${opt.req!==false?'<span class="req">必須</span>':''}</label>
+    <input id="${id}" name="${id}" type="${opt.type||'text'}" value="${v}" ${opt.ph?`placeholder="${opt.ph}"`:''} ${opt.ac?`autocomplete="${opt.ac}"`:''} ${opt.im?`inputmode="${opt.im}"`:''}>
+    ${opt.hint?`<span class="hint">${opt.hint}</span>`:''}<span class="msg" hidden></span></div>`;
+}
+function vCheckout(){
+  if(!cart.length){view={name:'cart'};return vCart()}
+  return `<div class="wrap">${steps(1)}<div class="co"><form id="coForm" novalidate style="min-width:0">
+    <h1>お届け先・お支払い方法</h1><p style="margin:0 0 28px;color:var(--sub);font-size:13px">会員登録なしでご購入いただけます。</p>
+    <fieldset><legend>ご注文者・お届け先</legend>
+      <div class="row2">${fld('name','お名前',{ph:'木下 花子',ac:'name'})}${fld('kana','フリガナ',{ph:'キノシタ ハナコ'})}</div>
+      <div class="row2">${fld('zip','郵便番号',{ph:'1234567',im:'numeric',ac:'postal-code',hint:'ハイフンなし7桁'})}
+      <div class="f" data-f="pref"><label for="pref">都道府県<span class="req">必須</span></label><select id="pref" name="pref"><option value="">選択してください</option>${PREFS.map(p=>`<option ${order.pref===p[0]?'selected':''}>${p[0]}</option>`).join('')}</select><span class="msg" hidden></span></div></div>
+      ${fld('addr1','市区町村・番地',{ac:'address-line1',ph:'木下町一丁目2-3'})}
+      ${fld('addr2','建物名・部屋番号',{req:false,ac:'address-line2'})}
+      <div class="row2">${fld('tel','電話番号',{type:'tel',im:'tel',ac:'tel',ph:'09012345678'})}${fld('email','メールアドレス',{type:'email',ac:'email',ph:'name@example.com'})}</div>
+      <label class="check"><input id="adult" type="checkbox" ${order.adult?'checked':''}><span>ご注文者・お受け取りの方が20歳以上であることを確認しました<span class="req">必須</span></span></label>
+      <span class="msg" id="adultMsg" style="font-size:12px;color:var(--err)" hidden>20歳以上であることの確認が必要です</span>
+    </fieldset>
+    <fieldset><legend>お届け日時</legend>
+      <div class="row2"><div class="f"><label for="date">お届け希望日</label><select id="date">${dateOptions()}</select><span class="hint">ご注文日から4日目以降を指定できます</span></div>
+      <div class="f"><label for="time">お届け時間帯</label><select id="time">${['指定なし','午前中','14〜16時','16〜18時','18〜20時','19〜21時'].map(t=>`<option ${order.time===t?'selected':''}>${t}</option>`).join('')}</select></div></div>
+    </fieldset>
+    <fieldset><legend>熨斗・ギフト包装</legend>
+      <div class="row2"><div class="f"><label for="wrap">包装</label><select id="wrap">${[['none','包装なし'],['wrap',`ギフト包装（+${yen(WRAP_FEE)}）`]].map(o=>`<option value="${o[0]}" ${order.wrap===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div>
+      <div class="f"><label for="noshi">熨斗（無料）</label><select id="noshi">${['なし','御祝','御礼','御歳暮','御年賀','内祝','寸志'].map(o=>`<option ${order.noshi===o?'selected':''}>${o}</option>`).join('')}</select></div></div>
+      ${fld('noshiName','熨斗の名入れ',{req:false,ph:'例：木下'})}
+    </fieldset>
+    <fieldset><legend>お支払い方法</legend><div class="radios" data-f="pay">${PAY.map(p=>`<label class="radio"><input type="radio" name="pay" value="${p[0]}" ${order.pay===p[0]?'checked':''}><span><b>${p[1]}</b><small>${p[2]}</small></span></label>`).join('')}</div><span class="msg" id="payMsg" style="font-size:12px;color:var(--err)" hidden>お支払い方法を選択してください</span></fieldset>
+    <div class="f"><label for="memo">ご要望など</label><textarea id="memo" rows="3">${esc(order.memo||'')}</textarea></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:28px"><button class="btn ghost" data-go="cart" type="button">カートに戻る</button><button class="btn" type="submit" style="flex:1">ご注文内容の確認へ</button></div>
+  </form>${summary()}</div></div>`;
+}
+
+function vConfirm(){
+  if(!cart.length){view={name:'cart'};return vCart()}
+  const o=order, payName=(PAY.find(p=>p[0]===o.pay)||[])[1];
+  return `<div class="wrap">${steps(2)}<div class="co"><div style="min-width:0">
+    <h1>ご注文内容の確認</h1><p style="margin:0 0 28px;color:var(--sub);font-size:13px">内容をご確認のうえ「決済へ進む」を押してください。この時点ではまだ注文は確定していません。</p>
+    <div class="conf-h"><h2>ご注文商品</h2><button class="link" data-go="cart" type="button">変更</button></div>
+    <table class="conf"><tbody>${cart.map(l=>{const p=byId(l.id);return `<tr><th style="color:var(--ink)">${p.name}<br><small style="color:var(--sub)">${l.size} × ${l.qty}</small></th><td class="num" style="text-align:right">${yen(priceOf(l)*l.qty)}</td></tr>`}).join('')}</tbody></table>
+    <div class="conf-h"><h2>お届け先</h2><button class="link" data-go="checkout" type="button">変更</button></div>
+    <table class="conf"><tbody>
+      <tr><th>お名前</th><td>${esc(o.name)}（${esc(o.kana)}）様</td></tr>
+      <tr><th>ご住所</th><td>〒${esc(o.zip.replace(/^(\d{3})(\d{4})$/,'$1-$2'))}<br>${esc(o.pref)}${esc(o.addr1)} ${esc(o.addr2)}</td></tr>
+      <tr><th>電話番号</th><td>${esc(o.tel)}</td></tr><tr><th>メール</th><td style="word-break:break-all">${esc(o.email)}</td></tr>
+      <tr><th>お届け日時</th><td>${esc(o.date||'指定なし')} ／ ${esc(o.time)}${totals().cool?'<br><small style="color:var(--sub)">クール便でお届けします</small>':''}</td></tr>
+      <tr><th>熨斗・包装</th><td>${o.wrap==='wrap'?'ギフト包装':'包装なし'} ／ 熨斗：${esc(o.noshi)}${o.noshiName?`（${esc(o.noshiName)}）`:''}</td></tr>
+      ${o.memo?`<tr><th>ご要望</th><td>${esc(o.memo)}</td></tr>`:''}
+    </tbody></table>
+    <div class="conf-h"><h2>お支払い方法</h2><button class="link" data-go="checkout" type="button">変更</button></div>
+    <table class="conf"><tbody><tr><th>お支払い</th><td>${payName}</td></tr></tbody></table>
+    <label class="check"><input id="agree" type="checkbox"><span><button class="link" data-page="guide" type="button">ご利用ガイド</button>・<button class="link" data-page="tradelaw" type="button">特定商取引法に基づく表記</button>の内容に同意します</span></label>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px"><button class="btn ghost" data-go="checkout" type="button">戻る</button><button class="btn" id="toPay" type="button" style="flex:1" disabled>決済へ進む</button></div>
+  </div>${summary()}</div></div>`;
+}
+
+function vHandoff(){
+  const t=totals(), payName=(PAY.find(p=>p[0]===order.pay)||[])[1];
+  const payload = {order_id:view.oid,amount:t.total,currency:'JPY',payment_method:order.pay,items:cart.map(l=>({sku:l.id+'-'+l.size,qty:l.qty,unit_price:priceOf(l)}))};
+  return `<div class="wrap">${steps(3)}<div class="handoff">
+    <span class="eyebrow">DEMO ／ 決済の手前</span>
+    <h1>ここから決済代行サービスへ接続します</h1>
+    <p>受付番号 <b class="num">${view.oid}</b> ／ ご請求額 <b class="num">${yen(t.total)}</b> ／ ${payName}</p>
+    <p>本番環境では、この画面の代わりに Stripe・PAY.JP・GMOペイメントゲートウェイなどの決済画面へ遷移し、決済完了の通知を受けて注文を確定します。</p>
+    <pre style="text-align:left;background:var(--mist);padding:14px;font-size:12px;overflow-x:auto;margin:0">${esc(JSON.stringify(payload,null,2))}</pre>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn ghost" data-go="confirm" type="button">確認画面に戻る</button><button class="btn" id="resetDemo" type="button">デモをリセットしてトップへ</button></div>
+  </div></div>`;
+}
+
+const PAGES = {
+  guide:['ご利用ガイド',()=>`<h2>お支払い方法</h2><p>${PAY.map(p=>`${p[1]}：${p[2]}`).join('<br>')}</p>
+    <h2>送料</h2><p>1配送先あたりの送料です（税込）。${yen(FREE_LINE)}以上のご注文は送料無料。要冷蔵商品を含む場合はクール便料金 ${yen(COOL_FEE)} が加算されます。</p>
+    <div style="overflow-x:auto"><table class="ship num"><thead><tr><th>地域</th><th>送料</th></tr></thead><tbody>${Object.values(REGION).map(r=>`<tr><td>${r[0]}</td><td>${yen(r[1])}</td></tr>`).join('')}</tbody></table></div>
+    <h2>お届け</h2><p>ご注文（前払いの場合はご入金確認）から3〜7日以内に発送します。お届け日はご注文日から4日目以降で指定できます。</p>
+    <h2>返品・交換</h2><p>未開封のものに限り、商品到着後8日以内にご連絡いただいた場合に承ります。破損・誤配送の場合は送料当社負担で交換いたします。</p>
+    <h2>年齢確認</h2><p>20歳未満の方への酒類の販売はいたしません。ご注文時に年齢の確認をお願いしています。</p>`],
+  faq:['よくあるご質問',()=>`<h2>領収書は発行できますか？</h2><p>はい。ご注文時の「ご要望」欄に宛名をご記入ください。商品に同封します。</p><h2>のし紙の種類は選べますか？</h2><p>御祝・御礼・御歳暮・御年賀・内祝・寸志からお選びいただけます。</p><h2>生酒はどう保管すればいいですか？</h2><p>到着後すぐに冷蔵庫（10℃以下）で保管し、開栓後は1週間を目安にお召し上がりください。</p>`],
+  company:['蔵について',()=>`<p>きのした酒造は、雪どけ水が流れ込む川のほとりで明治二十二年に創業しました。契約農家と育てた酒米と、蔵の井戸から汲む軟水で、冬のあいだだけ酒を仕込んでいます。</p><p style="color:var(--sub);font-size:13px">※本サイトは架空の蔵元によるデモです。</p>`],
+  tradelaw:['特定商取引法に基づく表記',()=>`<p style="color:var(--sub);font-size:13px">※公開前に実際の事業者情報に差し替えてください。</p><table class="spec"><tbody>${[['販売業者','（記入）'],['運営責任者','（記入）'],['所在地','（記入）'],['電話番号','（記入）'],['酒類販売管理者','（記入）'],['通信販売酒類小売業免許','（記入）'],['販売価格','各商品ページに税込価格で表示'],['商品代金以外の必要料金','送料・クール便料金・代引手数料・包装料'],['引渡時期','ご注文から3〜7日以内に発送'],['返品','未開封品に限り到着後8日以内']].map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</tbody></table>`],
+  privacy:['プライバシーポリシー',()=>`<p>お客様の個人情報は、ご注文商品の発送、ご連絡、およびサービス向上のためにのみ利用し、法令に基づく場合を除き第三者に提供しません。</p><p style="color:var(--sub);font-size:13px">※公開前に正式な文面に差し替えてください。</p>`],
+  mypage:['マイページ',()=>`<p>会員機能（注文履歴・お届け先の登録）は今後実装予定です。現在はゲスト購入のみご利用いただけます。</p><button class="btn" data-go="list" type="button" style="justify-self:start">商品を見る</button>`]
+};
+function vPage(){const pg=PAGES[view.page];return `<div class="wrap"><div class="crumb"><button data-go="home" type="button">ホーム</button>›<span>${pg[0]}</span></div><div class="doc"><h1>${pg[0]}</h1>${pg[1]()}</div></div>`}
+
+/* ---------- render & nav ---------- */
+let mvTimer;
+function render(){
+  clearInterval(mvTimer);
+  const V={home:vHome,list:vList,product:vProduct,cart:vCart,checkout:vCheckout,confirm:vConfirm,handoff:vHandoff,page:vPage};
+  app.innerHTML = (V[view.name]||vHome)();
+  document.body.classList.toggle('has-buybar', view.name==='product');
+  if(view.name==='home') initMV();
+  if(view.name==='checkout') bindCheckout();
+  if(view.name==='confirm'){const a=document.getElementById('agree'),b=document.getElementById('toPay');a.addEventListener('change',()=>b.disabled=!a.checked);b.addEventListener('click',()=>{view={name:'handoff',oid:'SK'+Date.now().toString().slice(-8)};go()})}
+  if(view.name==='handoff') document.getElementById('resetDemo').onclick=()=>{cart=[];order={};saveCart();store.set('sumikawa_order',order);view={name:'home'};go();toast('デモをリセットしました')};
+}
+function go(){render();window.scrollTo(0,0);closeDrawer()}
+function initMV(){
+  const tr=document.getElementById('mvTrack'),dots=[...document.querySelectorAll('#mvDots button')];let i=0;
+  const set=n=>{i=n;tr.scrollTo({left:tr.clientWidth*n+12*n,behavior:'smooth'})};
+  tr.addEventListener('scroll',()=>{const n=Math.round(tr.scrollLeft/(tr.clientWidth+12));dots.forEach((d,k)=>d.classList.toggle('on',k===n));i=n},{passive:true});
+  dots.forEach(d=>d.onclick=()=>set(+d.dataset.dot));
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches) mvTimer=setInterval(()=>set((i+1)%SLIDES.length),6000);
+}
+function toast(msg,action){
+  const t=document.getElementById('toast');t.innerHTML=`<span>${msg}</span>${action?`<button type="button" data-go="cart">カートを見る</button>`:''}`;t.hidden=false;
+  clearTimeout(t._h);t._h=setTimeout(()=>t.hidden=true,3200);
+}
+
+function collect(){
+  ['name','kana','zip','pref','addr1','addr2','tel','email','date','time','wrap','noshi','noshiName','memo'].forEach(k=>{const el=document.getElementById(k);if(el)order[k]=el.value.trim()});
+  order.adult=document.getElementById('adult').checked;
+  const r=document.querySelector('input[name=pay]:checked');order.pay=r?r.value:'';
+  store.set('sumikawa_order',order);
+}
+function bindCheckout(){
+  const f=document.getElementById('coForm');
+  const refresh=()=>{collect();document.querySelector('.sum').outerHTML=summary()};
+  ['pref','wrap'].forEach(id=>document.getElementById(id).addEventListener('change',refresh));
+  f.querySelectorAll('input[name=pay]').forEach(r=>r.addEventListener('change',refresh));
+  f.addEventListener('input',()=>collect());
+  f.addEventListener('submit',e=>{
+    e.preventDefault();collect();
+    const rules={name:v=>v?'':'お名前を入力してください',kana:v=>!v?'フリガナを入力してください':/^[ァ-ヶー\s　]+$/.test(v)?'':'全角カタカナで入力してください',
+      zip:v=>/^\d{7}$/.test(v.replace('-',''))?'':'郵便番号を7桁の数字で入力してください',pref:v=>v?'':'都道府県を選択してください',addr1:v=>v?'':'住所を入力してください',
+      tel:v=>/^0\d{9,10}$/.test(v.replace(/-/g,''))?'':'電話番号を正しく入力してください（例：09012345678）',email:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)?'':'メールアドレスの形式が正しくありません'};
+    let first=null;
+    Object.entries(rules).forEach(([k,fn])=>{const m=fn(order[k]||''),box=f.querySelector(`[data-f="${k}"]`),msg=box.querySelector('.msg');box.classList.toggle('bad',!!m);msg.textContent=m;msg.hidden=!m;if(m&&!first)first=document.getElementById(k)});
+    document.getElementById('adultMsg').hidden=order.adult;if(!order.adult&&!first)first=document.getElementById('adult');
+    document.getElementById('payMsg').hidden=!!order.pay;if(!order.pay&&!first)first=f.querySelector('input[name=pay]');
+    if(first){first.focus();first.scrollIntoView({block:'center'});return}
+    order.zip=order.zip.replace('-','');store.set('sumikawa_order',order);
+    view={name:'confirm'};go();
+  });
+}
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-go],[data-cat],[data-pid],[data-page],[data-size],[data-step],[data-cq],[data-rm],.js-add');
+  if(!el) return;
+  const d=el.dataset;
+  if(d.go){view={name:d.go};go();document.getElementById('toast').hidden=true}
+  else if(d.cat){view={name:'list',cat:d.cat};go()}
+  else if(d.pid){view={name:'product',id:d.pid};go()}
+  else if(d.page){view={name:'page',page:d.page};go()}
+  else if(d.size!==undefined){view.size=+d.size;const q=document.getElementById('pdQty').value;render();document.getElementById('pdQty').value=q}
+  else if(d.step){const q=document.getElementById('pdQty');q.value=Math.max(1,Math.min(24,(+q.value||1)+(+d.step)))}
+  else if(d.cq!==undefined){const l=cart[+d.cq];l.qty=Math.max(1,Math.min(24,l.qty+(+d.d)));saveCart();render()}
+  else if(d.rm!==undefined){cart.splice(+d.rm,1);saveCart();render()}
+  else if(el.classList.contains('js-add')){
+    const p=byId(view.id),size=p.sizes[view.size??0][0],qty=Math.max(1,Math.min(24,+document.getElementById('pdQty').value||1));
+    const ex=cart.find(l=>l.id===p.id&&l.size===size);if(ex)ex.qty=Math.min(24,ex.qty+qty);else cart.push({id:p.id,size,qty});
+    saveCart();toast(`${p.label}（${size}）をカートに入れました`,true);
+  }
+});
+document.addEventListener('change',e=>{
+  if(e.target.dataset.cqi!==undefined){const l=cart[+e.target.dataset.cqi];l.qty=Math.max(1,Math.min(24,+e.target.value||1));saveCart();render()}
+});
+document.addEventListener('submit',e=>{
+  if(!e.target.classList.contains('js-search')) return;
+  e.preventDefault();const q=e.target.querySelector('input').value.trim();view={name:'list',q};go();
+});
+
+/* drawer */
+const drawer=document.getElementById('drawer');
+function closeDrawer(){drawer.hidden=true}
+document.getElementById('menuOpen').onclick=()=>{drawer.hidden=false;document.getElementById('menuClose').focus()};
+document.getElementById('menuClose').onclick=closeDrawer;
+drawer.addEventListener('click',e=>{if(e.target===drawer)closeDrawer()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+const catBtns=CATS.map(c=>`<button data-cat="${c.id}" type="button">${c.name}</button>`).join('');
+document.getElementById('drawerCats').innerHTML=catBtns;
+document.getElementById('footCats').innerHTML=catBtns;
+
+/* age gate */
+(function(){
+  let ok=false;try{ok=sessionStorage.getItem('sumikawa_age')==='1'}catch(e){}
+  const g=document.getElementById('gate');if(!ok)g.hidden=false;
+  document.getElementById('gateYes').onclick=()=>{try{sessionStorage.setItem('sumikawa_age','1')}catch(e){}g.hidden=true};
+  document.getElementById('gateNo').onclick=()=>{document.getElementById('gateErr').hidden=false};
+})();
+
+updateBadge();render();
+</script>
+
+</body></html>
